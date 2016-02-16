@@ -89,7 +89,7 @@ function! s:mark_column(line1, line2, column, tab)
 
   if b:localindent.use_cc
     let c = (a:tab ? a:column * &l:ts : a:column) + 1
-    let &l:colorcolumn = b:localindent.orig_cc.','.c
+    let &l:colorcolumn = (b:localindent.orig_cc ? b:localindent.orig_cc.',' : '').c
   endif
 endfunction
 
