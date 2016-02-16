@@ -109,8 +109,10 @@ endfunction
 
 function! s:update(force)
   let cur_line = prevnonblank(line('.'))
-  let end = line('$')
-  if end == 1
+  let w_min = line('w0')
+  let w_max = line('w$')
+
+  if w_max == 1
     return
   endif
 
@@ -118,10 +120,13 @@ function! s:update(force)
 
   if !a:force && has_key(b:localindent, 'cache')
     let c_indent = b:localindent.cache[0]
-    let c_min = b:localindent.cache[1]
-    let c_max = b:localindent.cache[2]
+    let c_w_min = b:localindent.cache[1]
+    let c_w_max = b:localindent.cache[2]
+    let c_min = b:localindent.cache[3]
+    let c_max = b:localindent.cache[4]
 
-    if indent_len == c_indent && cur_line >= c_min && cur_line <= c_max
+    if w_min == c_w_min && w_max == c_w_max
+          \ && indent_len == c_indent && cur_line >= c_min && cur_line <= c_max
       return
     endif
   endif
@@ -129,15 +134,19 @@ function! s:update(force)
   let col_min = cur_line
   let col_max = cur_line
 
-  while col_min > 0
+  while col_min >= w_min
     let [_, i_len] = s:indent_space(col_min, -1)
     if i_len < indent_len
       break
     endif
     let col_min = prevnonblank(col_min - 1)
+    if col_min == 0
+      let col_min = 1
+      break
+    endif
   endwhile
 
-  while col_max < end
+  while col_max <= w_max
     let [_, i_len] = s:indent_space(col_max, -1)
     if i_len < indent_len
       break
@@ -145,7 +154,7 @@ function! s:update(force)
     let col_max = nextnonblank(col_max + 1)
   endwhile
 
-  let b:localindent.cache = [indent_len, col_min, col_max]
+  let b:localindent.cache = [indent_len, w_min, w_max, col_min, col_max]
 
   call s:mark_column(col_min, col_max, indent_len, indent_char == '\t')
 endfunction
