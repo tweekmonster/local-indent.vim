@@ -18,6 +18,12 @@ Option | Description
 `+cc` | Enable `colorcolumn`
 `-cc` | Disable `colorcolumn`
 
+To enable it in any file type, add this to your vimrc:
+
+```vim
+autocmd FileType * LocalIndentGuide +hl +cc
+```
+
 To change the highlight color:
 
 ```vim
