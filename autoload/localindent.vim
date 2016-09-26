@@ -116,6 +116,10 @@ function! s:update(force)
     return
   endif
 
+  if s:indent_space(cur_line, 0)[1] == 0
+    return s:clear()
+  endif
+
   let [indent_char, indent_len] = s:indent_space(cur_line, -1)
 
   if !a:force && has_key(b:localindent, 'cache')
