@@ -152,6 +152,10 @@ function! s:update(force)
       break
     endif
     let col_max = nextnonblank(col_max + 1)
+    if col_max == 0
+      let col_max = line('$')
+      break
+    endif
   endwhile
 
   let b:localindent.cache = [indent_len, w_min, w_max, col_min, col_max]
