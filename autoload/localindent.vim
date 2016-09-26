@@ -108,7 +108,15 @@ endfunction
 
 
 function! s:update(force)
-  let cur_line = prevnonblank(line('.'))
+  let force = a:force
+
+  if getline('.') =~# '^\s*$'
+    let force = 1
+    let cur_line = line('.')
+  else
+    let cur_line = prevnonblank(line('.'))
+  endif
+
   let w_min = line('w0')
   let w_max = line('w$')
 
@@ -116,13 +124,29 @@ function! s:update(force)
     return
   endif
 
-  if s:indent_space(cur_line, 0)[1] == 0
-    return s:clear()
+  if s:indent_space(line('.'), 0)[1] == 0
+    if getline(cur_line) == ''
+      " Blank lines are ambiguous.  Find a surrounding line that's indented
+      " the most.
+      let p = prevnonblank(cur_line)
+      let n = nextnonblank(cur_line)
+      if !p && !n
+        return s:clear()
+      endif
+
+      if indent(p) > indent(n)
+        let cur_line = p
+      else
+        let cur_line = n
+      endif
+    else
+      return s:clear()
+    endif
   endif
 
   let [indent_char, indent_len] = s:indent_space(cur_line, -1)
 
-  if !a:force && has_key(b:localindent, 'cache')
+  if !force && has_key(b:localindent, 'cache') && has_key(b:localindent, 'column')
     let c_indent = b:localindent.cache[0]
     let c_w_min = b:localindent.cache[1]
     let c_w_max = b:localindent.cache[2]
