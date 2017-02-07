@@ -1,4 +1,4 @@
-function! localindent#setup_buffer(...)
+function! localindent#setup_buffer(...) abort
   if !exists('b:localindent')
     let b:localindent = {'orig_cc': &l:colorcolumn, 'use_hl': 0, 'use_cc': 0}
   endif
@@ -31,7 +31,7 @@ function! localindent#setup_buffer(...)
 endfunction
 
 
-function! s:clear()
+function! s:clear() abort
   if has_key(b:localindent, 'column')
     for id in b:localindent.column
       silent! call matchdelete(id)
@@ -45,7 +45,7 @@ function! s:clear()
 endfunction
 
 
-function! s:mark_column(line1, line2, column, tab)
+function! s:mark_column(line1, line2, column, tab) abort
   call s:clear()
   if a:line1 == 0 || a:line1 == a:line2 || a:line1 > a:line2
     return
@@ -94,7 +94,7 @@ function! s:mark_column(line1, line2, column, tab)
 endfunction
 
 
-function! s:indent_space(expr, delta)
+function! s:indent_space(expr, delta) abort
   let indent_char = ' '
   let indent_len = indent(a:expr)
   if !&expandtab
@@ -107,7 +107,7 @@ function! s:indent_space(expr, delta)
 endfunction
 
 
-function! s:update(force)
+function! s:update(force) abort
   let force = a:force
 
   if getline('.') =~# '^\s*$'

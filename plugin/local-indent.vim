@@ -1,7 +1,7 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! s:set_highlight()
+function! s:set_highlight() abort
   highlight default LocalIndentGuide ctermfg=3 ctermbg=0 cterm=inverse guifg=NONE guibg=#e4b65b
 endfunction
 
