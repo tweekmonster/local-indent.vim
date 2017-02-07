@@ -39,7 +39,7 @@ function! s:clear()
     unlet b:localindent.column
   endif
 
-  if &l:colorcolumn != b:localindent.orig_cc
+  if b:localindent.use_cc && &l:colorcolumn != b:localindent.orig_cc
     let &l:colorcolumn = b:localindent.orig_cc
   endif
 endfunction
