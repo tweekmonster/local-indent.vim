@@ -139,6 +139,10 @@ function! s:update(force) abort
       else
         let cur_line = n
       endif
+
+      if indent(cur_line) == 0
+        return s:clear()
+      endif
     else
       return s:clear()
     endif
